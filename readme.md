@@ -12,8 +12,8 @@ Someday perhaps I can use any knowledge I gain from this project to contribute t
 - introspection
 - logic - if/else, arrays, loops, etc.
 - keyword arguments
--* @media bubbling and smart combination
--* css dom traversal: can detect and grab prop/vals from parents or anywhere up the tree
+- * @media bubbling and smart combination
+- * css dom traversal: can detect and grab prop/vals from parents or anywhere up the tree
 - file importing
 - executable
 
