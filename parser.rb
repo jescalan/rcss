@@ -47,21 +47,17 @@ class Node
     @properties << Hash[prop[1], prop[2]]
   end
 
-  def list_properties
-    puts @properties
-  end
-
   # adds a new node with itself as the parent, adds to the list of children
   def add_child(line)
     child = Node.new(line, self)
     @children << child
 
     # testing output
-    puts child.selector
-    puts "properties: #{child.list_properties}"
-    puts child.parent.selector if child.parent
-    # context is not getting set correctly!
-    
+    puts "node added: #{child.selector} with parent #{child.parent.selector if child.parent}"
+    # puts "properties: #{child.properties}"
+
+    # context is not getting set correctly! properties are not being added
+
     return child
   end
 
@@ -73,7 +69,7 @@ end
 # node.add_property("  color: red")
 # node.add_property("  background: blue")
 # node2 = Node.new("  .hello", node)
-# node2.add_property("    background-image: url('hello.png')")
+# node2.add_property("    background-image: url('hello.png')\n".match($property_matcher))
 # node2.list_properties
 # puts node2.indent.inspect
 
@@ -85,7 +81,7 @@ end
 
 # If the line is empty
 def empty_line(line)
-  puts "empty line"
+  # puts "empty line"
 end
 
 ### Count Indent
@@ -114,7 +110,7 @@ end
 def find_context(context, line)
   if context.nil?
     throw "Flagrant code error! Something in the indentation is seriously screwed up"
-  elsif context.indent == indent_level(line) + 1
+  elsif context.indent + 1 == indent_level(line)
     return context
   else
     find_context(context.parent, line)
@@ -163,7 +159,7 @@ end
 # Finally, an error is thrown if the line was indented too far.
 def process_line(line, index)
 
-  if indented?(line)
+  if !indented?(line)
     $context = $root
     add_selector_or_property(line, index)
   else
