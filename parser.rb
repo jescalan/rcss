@@ -52,11 +52,8 @@ class Node
     child = Node.new(line, self)
     @children << child
 
-    # testing output
-    puts "node added: #{child.selector} with parent #{child.parent.selector if child.parent}"
-    # puts "properties: #{child.properties}"
-
-    # context is not getting set correctly! properties are not being added
+    # nesting debug
+    # puts "node added: #{child.selector} with parent #{child.parent.selector if child.parent}"
 
     return child
   end
