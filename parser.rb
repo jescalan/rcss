@@ -187,7 +187,7 @@ $context = $root
 
 file.each_with_index do |line, index|
 
-  if line == "\n" or line.match(/\w/).to_s.empty? # this could be compressed to a single regex
+  if !line.match(/\S/)
     empty_line(line)
   else
     process_line(line, index)
