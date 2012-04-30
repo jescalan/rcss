@@ -26,6 +26,10 @@ def add_selector(node, style)
   case style
   when 'minified'
     $result << "#{full_selector.reverse.join(" ")}{"
+  when 'default'
+    $result << "#{full_selector.reverse.join(" ")} {\n"
+  when 'compressed'
+    $result << "#{full_selector.reverse.join(" ")} { "
   else
     throw "Flagrant Error! You must choose a generation style: 'minified', 'compressed', 'default', or 'debug'"
   end
@@ -34,15 +38,17 @@ end
 def add_properties(sel, style)
   case style
   when 'minified'
-    sel.properties.each { |prop|$result << "#{prop.keys.first}:#{prop.values.first};" }
-    close_block(style)
+    sel.properties.each { |prop| $result << "#{prop.keys.first}:#{prop.values.first};" }
+    $result << "}"
+  when 'default'
+    sel.properties.each { |prop| $result << "  #{prop.keys.first}: #{prop.values.first};\n" }
+    $result << "}\n"
+  when 'compressed'
+    sel.properties.each { |prop| $result << "#{prop.keys.first}: #{prop.values.first}; " }
+    $result << "}\n"
   else
     throw "Flagrant Error! You must choose a generation style: 'minified', 'compressed', 'default', or 'debug'"
   end
-end
-
-def close_block(style)
-  $result << "}"
 end
 
 def generate_tree(node, style)
