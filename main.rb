@@ -5,16 +5,15 @@ require './parser.rb'
 require './generator.rb'
 
 tree = parse('example.rcss')
-generate(tree, "debug")
+generate(tree, "compressed")
 
 ## Todo List
-# - generator
-# - another module that will run and replace variables
-# - another module that will run and replace mixins (with keyword args)
-# - a module that recognizes colors, for later.
+# - module that will run and replace variables
+# - module that will run and replace mixins (with keyword args)
+# - module that recognizes colors, for later.
 #    - includes all css colors names, hex, short hex, rgb, hsl.
 # - logic module (huge)
-# - getting props from parents
+# - getting props from parents and generating them
 # - media query handling
 
 

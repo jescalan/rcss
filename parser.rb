@@ -9,23 +9,34 @@ require './node.rb'
 
 $default_indent = nil
 $html_elements = [:a, :abbr, :address, :area, :article, :aside, :audio, :b, :base, :bdi, :bdo, :blockquote, :body, :br, :button, :canvas, :caption, :cite, :code, :col, :colgroup, :command, :datalist, :dd, :del, :details, :dfn, :div, :dl, :dt, :em, :embed, :fieldset, :figcaption, :figure, :footer, :form, :h1, :h2, :h3, :h4, :h5, :h6, :head, :header, :hgroup, :hr, :html, :i, :iframe, :img, :input, :ins, :keygen, :kbd, :label, :legend, :li, :link, :map, :mark, :menu, :meta, :meter, :nav, :noscript, :object, :ol, :optgroup, :option, :output, :p, :param, :pre, :progress, :q, :rp, :rt, :ruby, :s, :samp, :script, :section, :select, :small, :source, :span, :strong, :style, :sub, :summary, :sup, :table, :tbody, :td, :textarea, :tfoot, :th, :thead, :time, :title, :tr, :track, :u, :ul, :var, :video, :wbr]
-$property_matcher = /([a-zA-Z\-]+):\s*([a-zA-Z0-9#"'\-\(\)\.]+)/
+$property_matcher = /([a-zA-Z\-]+):\s*([a-zA-Z0-9#"'\-\(\)\. ]+)/
 $root = nil
 $context = nil
-# probably should be an indent matcher here. these could also be global methods that include
-# match, like obj.prop_val or obj.indent
+
+# ----------------------------
+# Main Function (External)
+# ----------------------------
+
+## Parse
+# Opens the file, creates the root context, and goes through each line of the file
+# ignoring empty lines and processing lines with text. Returns the entire AST when finished.
+def parse(filename)
+  file = File.open(filename, "r").readlines
+
+  $root = Node.new('root')
+  $context = $root
+
+  file.each_with_index do |line, index|
+    process_line(line, index) if line.match(/\S/)
+  end
+
+  return $root
+
+end
 
 # ----------------------------
 # Internal Methods
 # ----------------------------
-
-# TODO: make these private? advantages?
-
-### Empty Line
-# If the line is empty, ignore it. This method may be removed.
-def empty_line(line)
-  # puts "empty line"
-end
 
 ### Count Indent
 # Returns how many spaces the line has been indented
@@ -118,32 +129,5 @@ def process_line(line, index)
     end
 
   end
-
-end
-
-# ----------------------------
-# Main Function (External)
-# ----------------------------
-
-## Parse
-# Opens the file, creates the root context, and goes through each line of the file
-# ignoring empty lines and processing lines with text. Returns the entire AST when finished.
-def parse(filename)
-  file = File.open(filename, "r").readlines
-
-  $root = Node.new('root')
-  $context = $root
-
-  file.each_with_index do |line, index|
-
-    if !line.match(/\S/)
-      empty_line(line)
-    else
-      process_line(line, index)
-    end
-
-  end
-
-  return $root
 
 end
