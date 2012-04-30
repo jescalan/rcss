@@ -6,7 +6,7 @@
 # - default
 # - debug
 
-$result = Array.new
+$result = []
 
 # ----------------------------
 # Internal Functions
@@ -30,6 +30,8 @@ def add_selector(node, style)
     $result << "#{full_selector.reverse.join(" ")} {\n"
   when 'compressed'
     $result << "#{full_selector.reverse.join(" ")} { "
+  when 'debug'
+    $result << "/* line #{node.line}: */\n#{full_selector.reverse.join(" ")} {\n"
   else
     throw "Flagrant Error! You must choose a generation style: 'minified', 'compressed', 'default', or 'debug'"
   end
@@ -45,6 +47,9 @@ def add_properties(sel, style)
     $result << "}\n"
   when 'compressed'
     sel.properties.each { |prop| $result << "#{prop.keys.first}: #{prop.values.first}; " }
+    $result << "}\n"
+  when 'debug'
+    sel.properties.each { |prop| $result << "  #{prop.keys.first}: #{prop.values.first};\n" }
     $result << "}\n"
   else
     throw "Flagrant Error! You must choose a generation style: 'minified', 'compressed', 'default', or 'debug'"

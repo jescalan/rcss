@@ -5,7 +5,7 @@ require './parser.rb'
 require './generator.rb'
 
 tree = parse('example.rcss')
-generate(tree, "compressed")
+generate(tree, "debug")
 
 ## Todo List
 # - generator

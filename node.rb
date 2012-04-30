@@ -1,13 +1,12 @@
 class Node
-  attr_accessor :selector, :parent, :properties, :indent, :children
+  attr_accessor :selector, :parent, :properties, :indent, :children, :line
 
-  # worth thinking about adding line, for debugging during generation
-
-  def initialize(selector, parent = nil)
+  def initialize(selector, index = nil, parent = nil)
     @selector = selector.strip # get rid of whitespace and line breaks
     @parent = parent
     @properties = Array.new
     @children = Array.new
+    @line = index
 
     # each line carries a line break which registers as whitespace
     # and must be sanitized before indent detection
@@ -28,8 +27,8 @@ class Node
   end
 
   # adds a new node with itself as the parent, adds to the list of children
-  def add_child(line)
-    child = Node.new(line, self)
+  def add_child(line, index)
+    child = Node.new(line, index, self)
     @children << child
 
     # nesting debug

@@ -75,7 +75,7 @@ def add_selector_or_property(line, index)
   if property && property.length == 3
     $context.add_property(property)
   elsif line.match(/[#|\.]\w+/) || $html_elements.include?(line.match(/\w+/)[0].to_sym)
-    $context = $context.add_child(line)
+    $context = $context.add_child(line, index)
   else
     throw "Flagrant code error! Syntax error on line #{index} - make sure you are writing a valid selector."
   end
