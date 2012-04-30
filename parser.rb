@@ -82,11 +82,26 @@ end
 # as a child of the current context then sets itself as the new context. If it's not
 # read as a selector or prop/val, a syntax error is thrown.
 def add_selector_or_property(line, index)
+
   property = line.match($property_matcher)
   if property && property.length == 3
+
+    # this is where I need to look for variables, colors, and functions
+    # add property should be split out to its own sub-method that detects these things
+
     $context.add_property(property)
   elsif line.match(/[#|\.]\w+/) || $html_elements.include?(line.match(/\w+/)[0].to_sym)
+
+    # before immediately adding a child, need to check name against the mixin index and see
+    # if it matches a mixin
+
     $context = $context.add_child(line, index)
+
+    # there needs to be an else here that looks for traditional() mixin syntax
+    # and another like that looks for @directives
+    # - @media, @font-face, @keyframes, @extend
+    # really some of these should only be allowed at root level
+
   else
     throw "Flagrant code error! Syntax error on line #{index} - make sure you are writing a valid selector."
   end
@@ -112,9 +127,12 @@ end
 # Finally, an error is thrown if the line was indented too far.
 def process_line(line, index)
 
+  # there should be a check for interpolation here, and just run a simple replace for each line
+
   if !indented?(line)
     $context = $root
     add_selector_or_property(line, index)
+    # check here for @import, @font-face, and @keyframes
   else
 
     set_default_indent(line) if $default_indent.nil?

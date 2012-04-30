@@ -8,13 +8,14 @@ Someday perhaps I can use any knowledge I gain from this project to contribute t
 - style agnostic - use brackets and semicolons or not
 - nested selectors
 - variables
-- native-style mixins: mixins look exactly like a normal css prop/val
-- introspection
+- native-style mixins: mixins can look exactly like a normal css prop/val
+- introspection (if root)
 - logic - if/else, arrays, loops, etc.
 - keyword arguments
 - * @media bubbling and smart combination
 - * css dom traversal: can detect and grab prop/vals from parents or anywhere up the tree
 - file importing
+- variable interpolation
 - executable
 
 I have been programming for about a year, am 100% self taught, and have never built anything like this before. Should be quite a journey!
