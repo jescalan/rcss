@@ -10,3 +10,6 @@ body
   
   .what
     color: green
+
+#test
+  color: #4a4a4a

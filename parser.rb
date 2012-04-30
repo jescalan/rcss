@@ -16,12 +16,13 @@ $context = nil
 # match, like obj.prop_val or obj.indent
 
 # ----------------------------
-# Sub Methods
+# Internal Methods
 # ----------------------------
 
-# Most of these are used for indent detection and tokenization
+# TODO: make these private? advantages?
 
-# If the line is empty
+### Empty Line
+# If the line is empty, ignore it. This method may be removed.
 def empty_line(line)
   # puts "empty line"
 end
@@ -33,21 +34,26 @@ def count_indent(line)
 end
 
 ### Count Indent
-# Returns the number of times the line has been indented
+# Returns the number of times the line has been indented per the default indent
 def indent_level(line)
   count_indent(line)/$default_indent
 end
 
 ### Set Default Indent
-# If no indent has been set already, set the default indent space.
+# If no indent has been set already, set the default indent level.
 # Only runs on the first indent it encounters
 def set_default_indent(line)
   $default_indent = count_indent(line)
 end
 
+## Indented?
+# Feed it a line, returns true if the line is indented and false if not
+def indented?(line)
+  line.gsub("\n", "").match(/(\s+)/).nil? ? false : true
+end
+
 ### Find Context
-# One of the most important but logically twisted methods here, this one
-# performs a recursive search up the node tree until it finds an appropriate
+# Performs a recursive search up the node tree until it finds an appropriate
 # parent for a line based on its indent.
 def find_context(context, line)
   if context.nil?
@@ -75,28 +81,22 @@ def add_selector_or_property(line, index)
   end
 end
 
-## Indented?
-# Feed it a line, returns true if indented and false if not
-def indented?(line)
-  line.gsub("\n", "").match(/(\s+)/).nil? ? false : true
-end
-
 ### Process Line
-# This method is super dense, but extremely important to how rcss works.
+# This method is super dense, but is the core of the nesting functionality.
 
 # First, it checks to see if there is an indent. If not, we're working with a
 # root property, which means that it should be added as a child of $root, and
 # the context should be switched to it, assuming it's a selector.
 
 # If there is an indent, it needs to be checked and added under the right parent
-# selector. If the line's indent is the current context's indent + 1, this is the
-# right selector and it is added either as a prop/val or selector by the
-# add_selector_or_property function.
+# selector. If the line's indent is the current context's indent + 1, we are in the
+# right context and it is added under the current context either as a prop/val or 
+# selector by the add_selector_or_property() function.
 
 # If the line's indent is less than the current context's indent, we need to figure
-# out what it's parent is and nest it correctly. The find_context function iterates
-# recursively up the node tree until it finds a match. It then sets that match as the
-# current context and adds the line as a selector or property under it.
+# out what it's parent is and nest it correctly. The find_context() function is called 
+# and iterates recursively up the node tree until it finds a match. It then sets 
+# that match as the current context and adds the line as a selector or property under it.
 
 # Finally, an error is thrown if the line was indented too far.
 def process_line(line, index)
@@ -122,9 +122,12 @@ def process_line(line, index)
 end
 
 # ----------------------------
-# Main Function
+# Main Function (External)
 # ----------------------------
 
+## Parse
+# Opens the file, creates the root context, and goes through each line of the file
+# ignoring empty lines and processing lines with text. Returns the entire AST when finished.
 def parse(filename)
   file = File.open(filename, "r").readlines
 
@@ -141,7 +144,6 @@ def parse(filename)
 
   end
 
-  # contains all nodes
   return $root
 
 end
