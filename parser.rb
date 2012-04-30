@@ -9,7 +9,7 @@ require './node.rb'
 
 $default_indent = nil
 $html_elements = [:a, :abbr, :address, :area, :article, :aside, :audio, :b, :base, :bdi, :bdo, :blockquote, :body, :br, :button, :canvas, :caption, :cite, :code, :col, :colgroup, :command, :datalist, :dd, :del, :details, :dfn, :div, :dl, :dt, :em, :embed, :fieldset, :figcaption, :figure, :footer, :form, :h1, :h2, :h3, :h4, :h5, :h6, :head, :header, :hgroup, :hr, :html, :i, :iframe, :img, :input, :ins, :keygen, :kbd, :label, :legend, :li, :link, :map, :mark, :menu, :meta, :meter, :nav, :noscript, :object, :ol, :optgroup, :option, :output, :p, :param, :pre, :progress, :q, :rp, :rt, :ruby, :s, :samp, :script, :section, :select, :small, :source, :span, :strong, :style, :sub, :summary, :sup, :table, :tbody, :td, :textarea, :tfoot, :th, :thead, :time, :title, :tr, :track, :u, :ul, :var, :video, :wbr]
-$property_matcher = /([a-zA-Z\-]+):\s*([a-zA-Z0-9#"'\-\(\)\. ]+)/
+$property_matcher = /([a-zA-Z:\-]+):\s*([a-zA-Z0-9#"'\-\(\)\. ]+)/
 $root = nil
 $context = nil
 
@@ -84,25 +84,21 @@ end
 def add_selector_or_property(line, index)
 
   property = line.match($property_matcher)
-  if property && property.length == 3
 
-    # this is where I need to look for variables, colors, and functions
-    # add property should be split out to its own sub-method that detects these things
-
-    $context.add_property(property)
-  elsif line.match(/[#|\.]\w+/) || $html_elements.include?(line.match(/\w+/)[0].to_sym)
-
+  if line.match(/[#|\.][a-zA-Z\:\-]+/) || $html_elements.include?(line.match(/\w+/)[0].to_sym)
     # before immediately adding a child, need to check name against the mixin index and see
     # if it matches a mixin
-
     $context = $context.add_child(line, index)
+  elsif property && property.length == 3
+    # this is where I need to look for variables, colors, and functions
+    # add property should be split out to its own sub-method that detects these things
+    $context.add_property(property)
 
+  else
     # there needs to be an else here that looks for traditional() mixin syntax
     # and another like that looks for @directives
     # - @media, @font-face, @keyframes, @extend
     # really some of these should only be allowed at root level
-
-  else
     throw "Flagrant code error! Syntax error on line #{index} - make sure you are writing a valid selector."
   end
 end

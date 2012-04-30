@@ -11,6 +11,6 @@ body
   .what
     color: green
 
-#test
+#test:hover
   background: url("hello.png") no-repeat
   margin: 0 5px

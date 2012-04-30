@@ -12,6 +12,9 @@ $result = []
 # Internal Functions
 # ----------------------------
 
+# you forgot about pseudo-selectors son
+# this should go back after generation and remove the space
+# before any selector that starts with a colon. easiest that way
 def generate_selector(node, full_selector)
   full_selector << node.selector
   unless node.parent.selector == 'root'
